@@ -1,17 +1,17 @@
 use std::default::Default;
 
-#[derive(Default)]
+#[derive(Default, Debug)]
 pub struct Registers {
-    a: u8,
-    b: u8,
-    c: u8,
-    d: u8,
-    e: u8,
-    h: u8,
-    l: u8,
-    flags: u8,
-    sp: u16,
-    pc: u16,
+    pub a: u8,
+    pub b: u8,
+    pub c: u8,
+    pub d: u8,
+    pub e: u8,
+    pub h: u8,
+    pub l: u8,
+    pub flags: u8,
+    pub sp: u16,
+    pub pc: u16,
 }
 
 impl Registers {
@@ -22,5 +22,21 @@ impl Registers {
             sp: 0xFFFE,
             ..Default::default()
         }
+    }
+
+    pub fn set(&mut self, bit: u8, b: bool) {
+        self.flags |= (if b { 1 } else { 0 }) << bit;
+    }
+
+    pub fn set_zero(&mut self, b: bool) {
+        self.set(7, b);
+    }
+
+    pub fn set_subtract(&mut self, b: bool) {
+        self.set(6, b);
+    }
+
+    pub fn set_half_carry(&mut self, b: bool) {
+        self.set(5, b);
     }
 }

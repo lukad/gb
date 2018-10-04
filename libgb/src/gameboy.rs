@@ -20,15 +20,17 @@ impl Gameboy {
         Gameboy { cpu: cpu }
     }
 
-    pub fn run(&self) {
-        loop {}
+    pub fn run(&mut self) {
+        loop {
+            self.cpu.step();
+        }
     }
 
     /// Loads a ROM from disk into memory.
     pub fn load(&mut self, path: String) -> io::Result<()> {
         info!("Loading ROM {}", path);
         let f = File::open(path)?;
-        self.cpu.read(f, 0);
+        self.cpu.load(f, 0);
         Ok(())
     }
 }
