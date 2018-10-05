@@ -4,6 +4,7 @@ use mmu::Mmu;
 use registers::Registers;
 
 use instruction::{
+    DoubleRegister::*,
     Instruction::{self, *},
     Register::*,
 };
@@ -29,7 +30,10 @@ impl Cpu {
 
     pub fn step(&mut self) {
         let x = self.mmu.read_byte(self.v.pc);
-        let ins = Instruction::decode(x);
+        let ins = Instruction::decode(x).unwrap_or_else(|byte| {
+            debug!("{:?}", self.v);
+            panic!("Could not decode byte: 0x{:#4X}", byte);
+        });
         self.v.pc += 1;
         debug!("{:?}", ins);
         self.execute(ins);
@@ -80,6 +84,19 @@ impl Cpu {
                 self.v.set_subtract(false);
                 self.v.set_half_carry(new & 0x0F == 0);
             }
+            IncRR(BC) => {
+                let r = self.v.bc().wrapping_add(1);
+                self.v.set_bc(r);
+            }
+            IncRR(DE) => {
+                let r = self.v.de().wrapping_add(1);
+                self.v.set_de(r);
+            }
+            IncRR(HL) => {
+                let r = self.v.hl().wrapping_add(1);
+                self.v.set_hl(r);
+            }
+            IncRR(SP) => self.v.sp = self.v.sp.wrapping_add(1),
         }
     }
 }
