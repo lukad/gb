@@ -1,6 +1,7 @@
 use std::default::Default;
+use std::fmt;
 
-#[derive(Default, Debug)]
+#[derive(Default)]
 pub struct Registers {
     pub a: u8,
     pub b: u8,
@@ -12,6 +13,12 @@ pub struct Registers {
     pub flags: u8,
     pub sp: u16,
     pub pc: u16,
+}
+
+impl fmt::Debug for Registers {
+    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
+        write!(f, "Registers {{ a: {:#04X}, b: {:#04X}, c: {:#04X}, d: {:#04X}, e: {:#04X}, h: {:#04X}, l: {:#04X}, flags: {:#010b}, sp: {:#06X}, pc: {:#06X} }}", self.a, self.b, self.c, self.d, self.e, self.h, self.l, self.flags, self.sp, self.pc)
+    }
 }
 
 impl Registers {
