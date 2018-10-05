@@ -41,6 +41,7 @@ pub enum DoubleRegister {
 instructions! {
     Nop("NOP");
     Ret("RET");
+    Scf("SCF");
     IncR("INC {:?}", operand: Register);
     IncRR("INC {:?}", operand: DoubleRegister);
 }
@@ -56,6 +57,7 @@ impl Instruction {
         match byte {
             0x00 => Ok(Nop()),
             0xC9 => Ok(Ret()),
+            0x37 => Ok(Scf()),
 
             0x3C => Ok(IncR(A)),
             0x2C => Ok(IncR(L)),

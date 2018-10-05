@@ -49,6 +49,11 @@ impl Cpu {
         match ins.clone() {
             Nop() => (),
             Ret() => self.v.pc = self.pop(),
+            Scf() => {
+                self.v.set_subtract(false);
+                self.v.set_half_carry(false);
+                self.v.set_carry(true);
+            }
             IncR(register) => {
                 let new = match register {
                     A => {

@@ -73,4 +73,8 @@ impl Registers {
     pub fn set_half_carry(&mut self, b: bool) {
         self.set_flag(5, b);
     }
+
+    pub fn set_carry(&mut self, b: bool) {
+        self.set_flag(04, b);
+    }
 }
