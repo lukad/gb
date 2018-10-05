@@ -28,9 +28,13 @@ impl Cpu {
         self.mmu.load(reader, offset).unwrap();
     }
 
+    fn fetch_byte(&mut self) -> u8 {
+        self.mmu.read_byte(self.v.pc)
+    }
+
     pub fn step(&mut self) {
-        let x = self.mmu.read_byte(self.v.pc);
-        let ins = Instruction::decode(x).unwrap_or_else(|byte| {
+        let byte = self.fetch_byte();
+        let ins = Instruction::decode(byte).unwrap_or_else(|byte| {
             debug!("{:?}", self.v);
             panic!("Could not decode byte: {:#04X}", byte);
         });
@@ -102,6 +106,19 @@ impl Cpu {
                 self.v.set_hl(r);
             }
             IncRR(SP) => self.v.sp = self.v.sp.wrapping_add(1),
+            LdRN(r) => {
+                let byte = self.fetch_byte();
+                self.v.pc = self.v.pc.wrapping_add(1);
+                match r {
+                    A => self.v.a = byte,
+                    B => self.v.b = byte,
+                    C => self.v.c = byte,
+                    D => self.v.d = byte,
+                    E => self.v.e = byte,
+                    H => self.v.h = byte,
+                    L => self.v.l = byte,
+                }
+            }
         }
     }
 }

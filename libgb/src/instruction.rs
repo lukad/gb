@@ -42,8 +42,9 @@ instructions! {
     Nop("NOP");
     Ret("RET");
     Scf("SCF");
-    IncR("INC {:?}", operand: Register);
-    IncRR("INC {:?}", operand: DoubleRegister);
+    IncR("INC {:?}", target: Register);
+    IncRR("INC {:?}", target: DoubleRegister);
+    LdRN("LD {:?}, d8", target: Register);
 }
 
 use self::DoubleRegister::*;
@@ -71,6 +72,14 @@ impl Instruction {
             0x13 => Ok(IncRR(DE)),
             0x23 => Ok(IncRR(HL)),
             0xC3 => Ok(IncRR(SP)),
+
+            0x3E => Ok(LdRN(A)),
+            0x06 => Ok(LdRN(B)),
+            0x0E => Ok(LdRN(C)),
+            0x16 => Ok(LdRN(D)),
+            0x1E => Ok(LdRN(E)),
+            0x26 => Ok(LdRN(H)),
+            0x2E => Ok(LdRN(L)),
 
             _ => Err(byte),
         }
