@@ -32,7 +32,7 @@ impl Cpu {
         let x = self.mmu.read_byte(self.v.pc);
         let ins = Instruction::decode(x).unwrap_or_else(|byte| {
             debug!("{:?}", self.v);
-            panic!("Could not decode byte: 0x{:#4X}", byte);
+            panic!("Could not decode byte: {:#04X}", byte);
         });
         self.v.pc += 1;
         debug!("{:?}", ins);
