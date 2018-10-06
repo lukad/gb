@@ -1,5 +1,7 @@
 use std::fmt::{self, Debug, Formatter};
 
+use mmu::Mmu;
+
 macro_rules! instructions {
     ($($variant:ident($format:expr $(,$arg:ident: $arg_type:ty)*);)*) => {
         #[derive(Clone, PartialEq)]
@@ -44,8 +46,8 @@ instructions! {
     Scf("SCF");
     IncR("INC {:?}", target: Register);
     IncRR("INC {:?}", target: DoubleRegister);
-    LdRN("LD {:?}, d8", target: Register);
-    Jmp("JP a16");
+    LdRN("LD {:?}, {:02X}", target: Register, value: u8);
+    Jmp("JP {:04X}", address: u16);
 }
 
 use self::DoubleRegister::*;
@@ -55,7 +57,8 @@ use self::Register::*;
 impl Instruction {
     /// Decodes the given byte and returns `Ok(Instruction)`.
     /// If the byte cannot be decoded it is returned as `Err(byte)`.
-    pub fn decode(byte: u8) -> Result<Self, u8> {
+    pub fn decode(byte: u8, mmu: &Mmu, pc: u16) -> Result<Self, u8> {
+        let next_addr = pc.wrapping_add(1);
         match byte {
             0x00 => Ok(Nop()),
             0xC9 => Ok(Ret()),
@@ -74,15 +77,15 @@ impl Instruction {
             0x23 => Ok(IncRR(HL)),
             0x33 => Ok(IncRR(SP)),
 
-            0x3E => Ok(LdRN(A)),
-            0x06 => Ok(LdRN(B)),
-            0x0E => Ok(LdRN(C)),
-            0x16 => Ok(LdRN(D)),
-            0x1E => Ok(LdRN(E)),
-            0x26 => Ok(LdRN(H)),
-            0x2E => Ok(LdRN(L)),
+            0x3E => Ok(LdRN(A, mmu.read_byte(next_addr))),
+            0x06 => Ok(LdRN(B, mmu.read_byte(next_addr))),
+            0x0E => Ok(LdRN(C, mmu.read_byte(next_addr))),
+            0x16 => Ok(LdRN(D, mmu.read_byte(next_addr))),
+            0x1E => Ok(LdRN(E, mmu.read_byte(next_addr))),
+            0x26 => Ok(LdRN(H, mmu.read_byte(next_addr))),
+            0x2E => Ok(LdRN(L, mmu.read_byte(next_addr))),
 
-            0xC3 => Ok(Jmp()),
+            0xC3 => Ok(Jmp(mmu.read_word(next_addr).to_be())),
 
             _ => Err(byte),
         }

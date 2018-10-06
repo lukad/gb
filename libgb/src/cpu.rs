@@ -34,7 +34,7 @@ impl Cpu {
 
     pub fn step(&mut self) {
         let byte = self.fetch_byte();
-        let ins = Instruction::decode(byte).unwrap_or_else(|byte| {
+        let ins = Instruction::decode(byte, &self.mmu, self.v.pc).unwrap_or_else(|byte| {
             debug!("{:?}", self.v);
             panic!("Could not decode byte: {:#04X}", byte);
         });
@@ -58,8 +58,8 @@ impl Cpu {
                 self.v.set_half_carry(false);
                 self.v.set_carry(true);
             }
-            Jmp() => {
-                self.v.pc = self.mmu.read_word(self.v.pc).to_be();
+            Jmp(addr) => {
+                self.v.pc = addr;
             }
             IncR(register) => {
                 let new = match register {
@@ -109,8 +109,7 @@ impl Cpu {
                 self.v.set_hl(r);
             }
             IncRR(SP) => self.v.sp = self.v.sp.wrapping_add(1),
-            LdRN(r) => {
-                let byte = self.fetch_byte();
+            LdRN(r, byte) => {
                 self.v.pc = self.v.pc.wrapping_add(1);
                 match r {
                     A => self.v.a = byte,
