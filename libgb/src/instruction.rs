@@ -45,6 +45,7 @@ instructions! {
     IncR("INC {:?}", target: Register);
     IncRR("INC {:?}", target: DoubleRegister);
     LdRN("LD {:?}, d8", target: Register);
+    Jmp("JP a16");
 }
 
 use self::DoubleRegister::*;
@@ -80,6 +81,9 @@ impl Instruction {
             0x1E => Ok(LdRN(E)),
             0x26 => Ok(LdRN(H)),
             0x2E => Ok(LdRN(L)),
+
+            0xC3 => Ok(Jmp()),
+
             _ => Err(byte),
         }
     }

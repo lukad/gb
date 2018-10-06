@@ -58,6 +58,9 @@ impl Cpu {
                 self.v.set_half_carry(false);
                 self.v.set_carry(true);
             }
+            Jmp() => {
+                self.v.pc = self.mmu.read_word(self.v.pc).to_be();
+            }
             IncR(register) => {
                 let new = match register {
                     A => {
