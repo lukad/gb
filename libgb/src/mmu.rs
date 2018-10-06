@@ -22,6 +22,6 @@ impl Mmu {
     }
 
     pub fn read_word(&self, index: u16) -> u16 {
-        (self.mem[index as usize] as u16) << 8 | (self.mem[index as usize] as u16)
+        (self.mem[index as usize] as u16) << 8 | (self.mem[(index as usize).wrapping_add(1)] as u16)
     }
 }
