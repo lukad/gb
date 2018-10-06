@@ -61,17 +61,17 @@ impl Instruction {
             0x37 => Ok(Scf()),
 
             0x3C => Ok(IncR(A)),
-            0x2C => Ok(IncR(L)),
-            0x1C => Ok(IncR(E)),
-            0x0C => Ok(IncR(C)),
             0x04 => Ok(IncR(B)),
+            0x0C => Ok(IncR(C)),
             0x14 => Ok(IncR(D)),
+            0x1C => Ok(IncR(E)),
             0x24 => Ok(IncR(H)),
+            0x2C => Ok(IncR(L)),
 
             0x03 => Ok(IncRR(BC)),
             0x13 => Ok(IncRR(DE)),
             0x23 => Ok(IncRR(HL)),
-            0xC3 => Ok(IncRR(SP)),
+            0x33 => Ok(IncRR(SP)),
 
             0x3E => Ok(LdRN(A)),
             0x06 => Ok(LdRN(B)),
@@ -80,7 +80,6 @@ impl Instruction {
             0x1E => Ok(LdRN(E)),
             0x26 => Ok(LdRN(H)),
             0x2E => Ok(LdRN(L)),
-
             _ => Err(byte),
         }
     }
