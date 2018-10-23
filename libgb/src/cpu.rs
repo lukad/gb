@@ -58,6 +58,7 @@ impl Cpu {
                 self.v.set_half_carry(false);
                 self.v.set_carry(true);
             }
+            Di() => self.v.ime = false,
             Jmp(addr) => {
                 self.v.pc = addr;
             }

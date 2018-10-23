@@ -13,11 +13,12 @@ pub struct Registers {
     pub flags: u8,
     pub sp: u16,
     pub pc: u16,
+    pub ime: bool,
 }
 
 impl fmt::Debug for Registers {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-        write!(f, "Registers {{ a: {:#04X}, b: {:#04X}, c: {:#04X}, d: {:#04X}, e: {:#04X}, h: {:#04X}, l: {:#04X}, flags: {:#010b}, sp: {:#06X}, pc: {:#06X} }}", self.a, self.b, self.c, self.d, self.e, self.h, self.l, self.flags, self.sp, self.pc)
+        write!(f, "Registers {{ a: {:#04X}, b: {:#04X}, c: {:#04X}, d: {:#04X}, e: {:#04X}, h: {:#04X}, l: {:#04X}, flags: {:#010b}, sp: {:#06X}, pc: {:#06X} ime: {:?} }}", self.a, self.b, self.c, self.d, self.e, self.h, self.l, self.flags, self.sp, self.pc, self.ime)
     }
 }
 
@@ -27,6 +28,7 @@ impl Registers {
         Registers {
             pc: 0x0100,
             sp: 0xFFFE,
+            ime: true,
             ..Default::default()
         }
     }

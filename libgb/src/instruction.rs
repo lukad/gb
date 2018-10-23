@@ -44,6 +44,7 @@ instructions! {
     Nop("NOP");
     Ret("RET");
     Scf("SCF");
+    Di("DI");
     IncR("INC {:?}", target: Register);
     IncRR("INC {:?}", target: DoubleRegister);
     LdRN("LD {:?}, {:02X}", target: Register, value: u8);
@@ -63,6 +64,7 @@ impl Instruction {
             0x00 => Ok(Nop()),
             0xC9 => Ok(Ret()),
             0x37 => Ok(Scf()),
+            0xF3 => Ok(Di()),
 
             0x3C => Ok(IncR(A)),
             0x04 => Ok(IncR(B)),
